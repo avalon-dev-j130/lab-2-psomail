@@ -1,5 +1,8 @@
 package ru.avalon.java.j30.labs;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -25,6 +28,9 @@ public class Main {
         /*
          * TODO #01 Подключите к проекту все библиотеки, необходимые для соединения с СУБД.
          */
+
+        System.out.println(getUrl());
+
         try (Connection connection = getConnection()) {
             ProductCode code = new ProductCode("MO", 'N', "Movies");
             code.save(connection);
@@ -59,7 +65,14 @@ public class Main {
         /*
          * TODO #02 Реализуйте метод getUrl
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+
+       // Properties properties = getProperties("src/resources/database.properties");
+
+        Properties properties = getProperties("src/resources/database.properties");
+
+        return properties.getProperty("db.ApacheDerby.url");
+
+     //   throw new UnsupportedOperationException("Not implemented yet!");
     }
     /**
      * Возвращает параметры соединения
@@ -67,11 +80,28 @@ public class Main {
      * @return Объект класса {@link Properties}, содержащий параметры user и 
      * password
      */
-    private static Properties getProperties() {
+    private static Properties getProperties(String path) {
         /*
          * TODO #03 Реализуйте метод getProperties
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+
+        try {
+            Properties properties = new Properties();
+
+            try(FileReader reader = new FileReader(new File(path))){
+                properties.load(reader);
+                return properties;
+            }
+        }
+
+        catch (IOException e) {
+
+            System.out.println("Error! Properties not found!");
+        }
+
+        return null;
+
+      //  throw new UnsupportedOperationException("Not implemented yet!");
     }
     /**
      * Возвращает соединение с базой данных Sample
