@@ -3,7 +3,9 @@ package ru.avalon.java.j30.labs;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Properties;
@@ -19,17 +21,18 @@ import java.util.Properties;
  */
 public class Main {
 
+    private static final String CONFIGS = "resourses/config.properties";
+    private static Properties configs = new Properties();
+
     /**
      * Точка входа в приложение
      * 
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws IOException, SQLException {
         /*
          * TODO #01 Подключите к проекту все библиотеки, необходимые для соединения с СУБД.
          */
-
-        System.out.println(getUrl());
 
         try (Connection connection = getConnection()) {
             ProductCode code = new ProductCode("MO", 'N', "Movies");
@@ -61,16 +64,12 @@ public class Main {
      * 
      * @return URL в виде объекта класса {@link String}
      */
-    private static String getUrl() {
+    private static String getUrl() throws IOException{
         /*
          * TODO #02 Реализуйте метод getUrl
          */
-
-       // Properties properties = getProperties("src/resources/database.properties");
-
-        Properties properties = getProperties("src/resources/database.properties");
-
-        return properties.getProperty("db.ApacheDerby.url");
+        return  configs.getProperty("database.driver") + ":" + configs.getProperty("database.path") +
+                "/" + configs.getProperty("database.name");
 
      //   throw new UnsupportedOperationException("Not implemented yet!");
     }
@@ -80,27 +79,16 @@ public class Main {
      * @return Объект класса {@link Properties}, содержащий параметры user и 
      * password
      */
-    private static Properties getProperties(String path) {
+    private static Properties getProperties(String path)throws IOException {
         /*
          * TODO #03 Реализуйте метод getProperties
          */
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
 
-        try {
-            Properties properties = new Properties();
-
-            try(FileReader reader = new FileReader(new File(path))){
-                properties.load(reader);
-                return properties;
-            }
+        try (InputStream stream = classLoader.getResourceAsStream(CONFIGS)) {
+            configs.load(stream);
+            return configs;
         }
-
-        catch (IOException e) {
-
-            System.out.println("Error! Properties not found!");
-        }
-
-        return null;
-
       //  throw new UnsupportedOperationException("Not implemented yet!");
     }
     /**
@@ -109,11 +97,19 @@ public class Main {
      * @return объект типа {@link Connection}
      * @throws SQLException 
      */
-    private static Connection getConnection() throws SQLException {
+    private static Connection getConnection() throws IOException,SQLException {
         /*
          * TODO #04 Реализуйте метод getConnection
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+
+        configs = getProperties(CONFIGS);
+
+        String url = getUrl();
+        String username = configs.getProperty("database.user");
+        String password = configs.getProperty("database.password");
+
+        return DriverManager.getConnection(url, username, password);
+
+//        throw new UnsupportedOperationException("Not implemented yet!");
     }
-    
 }

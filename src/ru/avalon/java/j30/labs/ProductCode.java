@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Класс описывает представление о коде товара и отражает соответствующую 
@@ -43,11 +44,15 @@ public class ProductCode {
      * @param set {@link ResultSet}, полученный в результате запроса, 
      * содержащего все поля таблицы PRODUCT_CODE базы данных Sample.
      */
-    private ProductCode(ResultSet set) {
+    private ProductCode(ResultSet set) throws SQLException{
         /*
          * TODO #05 реализуйте конструктор класса ProductCode
          */
-        throw new UnsupportedOperationException("Not implemented yet!");        
+        this.code = set.getString("code");
+        this.discountCode = set.getString("discountCode").charAt(0);
+        this.description = set.getString("description");
+
+     //   throw new UnsupportedOperationException("Not implemented yet!");
     }
     /**
      * Возвращает код товара
@@ -108,7 +113,9 @@ public class ProductCode {
         /*
          * TODO #06 Реализуйте метод hashCode
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+        return Objects.hash(code, discountCode, description);
+
+        //   throw new UnsupportedOperationException("Not implemented yet!");
     }
     /**
      * Сравнивает некоторый произвольный объект с текущим объектом типа 
@@ -123,7 +130,18 @@ public class ProductCode {
         /*
          * TODO #07 Реализуйте метод equals
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+        if (this == obj) return true;
+
+        if(obj instanceof ProductCode){
+
+            ProductCode productCode = (ProductCode) obj;
+
+            return code.equals(productCode.code) && description.equals(productCode.description) && discountCode == productCode.discountCode;
+        }
+
+        return false;
+
+      // throw new UnsupportedOperationException("Not implemented yet!");
     }
     /**
      * Возвращает строковое представление кода товара.
