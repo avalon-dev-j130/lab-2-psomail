@@ -153,7 +153,8 @@ public class ProductCode {
         /*
          * TODO #08 Реализуйте метод toString
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+       return "code = " + code + "; discountCode = " + discountCode + "; description = " + description;
+       // throw new UnsupportedOperationException("Not implemented yet!");
     }
     /**
      * Возвращает запрос на выбор всех записей из таблицы PRODUCT_CODE 
