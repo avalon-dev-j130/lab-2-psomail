@@ -23,7 +23,6 @@ public class Main {
 
     private static final String CONFIGS = "resourses/config.properties";
     private static Properties configs = new Properties();
-
     /**
      * Точка входа в приложение
      * 
@@ -33,12 +32,10 @@ public class Main {
         /*
          * TODO #01 Подключите к проекту все библиотеки, необходимые для соединения с СУБД.
          */
-
         try (Connection connection = getConnection()) {
             ProductCode code = new ProductCode("MO", 'N', "Movies");
             code.save(connection);
             printAllCodes(connection);
-
             code.setCode("MV");
             code.save(connection);
             printAllCodes(connection);
@@ -53,7 +50,7 @@ public class Main {
      * @param connection действительное соединение с базой данных
      * @throws SQLException 
      */    
-    private static void printAllCodes(Connection connection) throws SQLException {
+    private static void printAllCodes(Connection connection) throws SQLException, IOException {
         Collection<ProductCode> codes = ProductCode.all(connection);
         for (ProductCode code : codes) {
             System.out.println(code);
