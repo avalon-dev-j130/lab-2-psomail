@@ -33,7 +33,7 @@ public class Main {
          * TODO #01 Подключите к проекту все библиотеки, необходимые для соединения с СУБД.
          */
         try (Connection connection = getConnection()) {
-            ProductCode code = new ProductCode("MO", 'N', "Movies");
+            ProductCode code = new ProductCode("MT", 'N', "Movies");
             code.save(connection);
             printAllCodes(connection);
             code.setCode("MV");

@@ -247,30 +247,59 @@ public class ProductCode {
         /*
          * TODO #13 Реализуйте метод convert
          */
+        PreparedStatement statement = connection.prepareStatement("select * from PRODUCT_CODE");
 
-        Collection<ProductCode> codes = all(connection);
 
-        PreparedStatement statement = getInsertQuery(connection);
-        Boolean operation = true;
+        //    try (ResultSet result = getSelectQuery(connection).executeQuery()) {
+        try (ResultSet result = statement.executeQuery()) {
 
-        for (ProductCode code : codes) {
-            if(code.equals(this)) {
-                operation = false;
-                break;
+                PreparedStatement statement1 = getInsertQuery(connection);
+
+                Boolean operation = true;
+
+                while (result.next()){
+                    if(this.equals(new ProductCode(result))) {
+                        operation = false;
+                        break;
+                    }
+                    if(this.getCode().equals(result.getString("code"))) {
+                        statement1 = getUpdateQuery(connection);
+                        break;
+                    }
+                }
+                if(operation) {
+                    statement1.setString(1, String.valueOf(discountCode));
+                    statement1.setString(2, description);
+                    statement1.setString(3, code);
+                    statement1.executeUpdate();
+                }
             }
 
-            if(code.getCode().equals(this.code)) {
-                statement = getUpdateQuery(connection);
-                break;
-            }
-        }
 
-        if(operation) {
-            statement.setString(1, String.valueOf(discountCode));
-            statement.setString(2, description);
-            statement.setString(3, code);
-            statement.executeUpdate();
-        }
+//
+//        Collection<ProductCode> codes = all(connection);
+//
+//        PreparedStatement statement = getInsertQuery(connection);
+//        Boolean operation = true;
+//
+//        for (ProductCode code : codes) {
+//            if(code.equals(this)) {
+//                operation = false;
+//                break;
+//            }
+//
+//            if(code.getCode().equals(this.code)) {
+//                statement = getUpdateQuery(connection);
+//                break;
+//            }
+//        }
+//
+//        if(operation) {
+//            statement.setString(1, String.valueOf(discountCode));
+//            statement.setString(2, description);
+//            statement.setString(3, code);
+//            statement.executeUpdate();
+//        }
 
       //  throw new UnsupportedOperationException("Not implemented yet!");
     }
@@ -284,9 +313,9 @@ public class ProductCode {
      */
     public static Collection<ProductCode> all(Connection connection) throws SQLException, IOException {
         try (PreparedStatement statement = getSelectQuery(connection)) {
-            try (ResultSet result = statement.executeQuery()) {
-                return convert(result);
-            }
+                try (ResultSet result = statement.executeQuery()) {
+                    return convert(result);
+                }
         }
     }
 }
